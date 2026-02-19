@@ -1,4 +1,3 @@
-#selectfile is the file being opened to be edited here.
 def test_file(file_name):
     try:
         with open(file_name, 'r') as file:
@@ -6,32 +5,50 @@ def test_file(file_name):
     except FileNotFoundError:
         print("File not found. Please check the path and try again.")
         return False
+def count_words(file_name):
+    if not test_file(file_name):
+        return None
+    try:
+        with open(file_name, 'r') as file:
+            data = file.read()
+    except FileNotFoundError:
+        return None
+    words = data.split()
+    return len(words)
+
+def info(file_name):
+    count = count_words(file_name)
+    if count is None:
+        print ("File not found. Please check the path and try again.")
+    else:
+        print ("The file has", count, "words in it.")
+    print ("The Path to the file is:", file_name)
+    
 def Update(file_name):
     from TimeHandling import get_timestamp
     import csv
 
     if not test_file(file_name):
         print ("File not found. Please check the path and try again.")
-        return
+        return None
     
-    with open(file_name, 'r') as file:
-        data = file.read()
-        wordcount = len(data.split())
-        timestamp = get_timestamp()
+    wordcount = count_words(file_name)
+    timestamp = get_timestamp()
     
     with open('ACfile.csv', 'a', newline='') as base:
         writer = csv.DictWriter(base, fieldnames=['wordcount', 'timestamp'])
-        writer.writerow({'wordcount': wordcount, 'timestamp': timestamp})
+        writer.writerow({'wordcount': str(wordcount), 'timestamp': str(timestamp)})
+    return wordcount
 def addtofile(file_name):
 
     import csv
+    if not test_file(file_name):
+        print ("File not found. Please check the path and try again.")
+        return
 
     with open(file_name, 'a', newline='') as base:
-        if not test_file(file_name):
-            print ("File not found. Please check the path and try again.")
-            return
         writer = csv.writer(base)
-        written = input("please type what you want to add to the file")
+        written = input("please type what you want to add to the file.\n")
         writer.writerow([written])
         Update(file_name)
 
@@ -77,5 +94,9 @@ def viewfile(file_name):
         if not test_file(file_name):
             print ("File not found. Please check the path and try again.")
             return
-        print(file.read())
+        text = file.read()
+        if not text:
+            print("File is empty.")
+            return
+        print(text)
 
