@@ -3,11 +3,9 @@ from FileHandling import Update, addtofile, removefromfile, viewfile, info, test
 while True:
     file_name = input("Enter the exact path to your file: ")
     if not test_file(file_name):
-        print("File not found. Please check the path and try again.")
         continue
     break
-Update(file_name)
-while True:
+while 'True':
     print("Do you want to add, remove, view, or view info about your file?")
     choice = input("Enter your choice (add/remove/view/info/quit): ").strip().lower()
     if choice == "add":

@@ -1,3 +1,4 @@
+
 def test_file(file_name):
     try:
         with open(file_name, 'r') as file:
@@ -13,7 +14,7 @@ def count_words(file_name):
             data = file.read()
     except FileNotFoundError:
         return None
-    words = data.split()
+    words = data.split(" ")
     return len(words)
 
 def info(file_name):
@@ -34,27 +35,35 @@ def Update(file_name):
     wordcount = count_words(file_name)
     timestamp = get_timestamp()
     
-    with open('Main/ACfile.csv', 'a', newline='') as base:
-        writer = csv.DictWriter(base, fieldnames=['wordcount', 'timestamp'])
-        writer.writerow({'wordcount': str(wordcount), 'timestamp': str(timestamp)})
-    return wordcount
+    with open(file_name, 'a', newline='') as base:
+        stamp = {'wordcount': "Word count:  " + str(wordcount), 'timestamp': "Timestamp:  " + str(timestamp)}
+    return stamp
 def addtofile(file_name):
 
     import csv
     if not test_file(file_name):
         return
-
-    with open(file_name, 'a', newline='') as base:
-        writer = csv.writer(base)
+    with open(file_name, 'a', newline='') as file:
+        writer = csv.writer(file)
+        with open(file_name, 'r') as base:
+            reader = csv.reader(base)
+            rows = list(reader)
+            nums = -1
+            #code to make sure the word count and timestamp ONLY EXIST ONCE AT THE END OF THE FILE!!!!!
+            while True:
+                if 'Word count:' in rows[nums] and 'Timestamp:' in rows[nums]:
+                    rows.pop(nums)
+                else:
+                    nums -= 1
         written = input("please type what you want to add to the file.\n")
         writer.writerow([written])
-        Update(file_name)
+        stamp = Update(file_name)
+        stamp_writer = csv.DictWriter(file, fieldnames=['wordcount', 'timestamp'])
+        stamp_writer.writerow(stamp)
 
 def removefromfile(file_name):
     import csv
-
     with open(file_name, 'r') as base:
-        
         if not test_file(file_name):
             return
         reader = csv.reader(base)
