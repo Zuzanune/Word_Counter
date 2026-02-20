@@ -3,7 +3,7 @@ def test_file(file_name):
         with open(file_name, 'r') as file:
             return True
     except FileNotFoundError:
-        print("File not found. Please check the path and try again.")
+        print ("File not found. Please check the path and try again.")
         return False
 def count_words(file_name):
     if not test_file(file_name):
@@ -19,7 +19,7 @@ def count_words(file_name):
 def info(file_name):
     count = count_words(file_name)
     if count is None:
-        print ("File not found. Please check the path and try again.")
+        print("File is empty")
     else:
         print ("The file has", count, "words in it.")
     print ("The Path to the file is:", file_name)
@@ -29,13 +29,12 @@ def Update(file_name):
     import csv
 
     if not test_file(file_name):
-        print ("File not found. Please check the path and try again.")
         return None
     
     wordcount = count_words(file_name)
     timestamp = get_timestamp()
     
-    with open('ACfile.csv', 'a', newline='') as base:
+    with open('Main/ACfile.csv', 'a', newline='') as base:
         writer = csv.DictWriter(base, fieldnames=['wordcount', 'timestamp'])
         writer.writerow({'wordcount': str(wordcount), 'timestamp': str(timestamp)})
     return wordcount
@@ -43,7 +42,6 @@ def addtofile(file_name):
 
     import csv
     if not test_file(file_name):
-        print ("File not found. Please check the path and try again.")
         return
 
     with open(file_name, 'a', newline='') as base:
@@ -58,7 +56,6 @@ def removefromfile(file_name):
     with open(file_name, 'r') as base:
         
         if not test_file(file_name):
-            print ("File not found. Please check the path and try again.")
             return
         reader = csv.reader(base)
         rows = list(reader)
@@ -81,7 +78,6 @@ def removefromfile(file_name):
 
     with open(file_name, 'w', newline='') as base:
         if not test_file(file_name):
-            print ("File not found. Please check the path and try again.")
             return
         writer = csv.writer(base)
         for i, row in enumerate(rows):
@@ -92,7 +88,6 @@ def removefromfile(file_name):
 def viewfile(file_name):
     with open(file_name, 'r') as file:
         if not test_file(file_name):
-            print ("File not found. Please check the path and try again.")
             return
         text = file.read()
         if not text:

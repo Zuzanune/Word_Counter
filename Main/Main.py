@@ -1,6 +1,11 @@
 #ZC 2nd Word Counter project
-from FileHandling import Update, addtofile, removefromfile, viewfile, info
-file_name = input("Enter the exact path to your file: ")
+from FileHandling import Update, addtofile, removefromfile, viewfile, info, test_file
+while True:
+    file_name = input("Enter the exact path to your file: ")
+    if not test_file(file_name):
+        print("File not found. Please check the path and try again.")
+        continue
+    break
 Update(file_name)
 while True:
     print("Do you want to add, remove, view, or view info about your file?")
