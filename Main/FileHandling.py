@@ -1,4 +1,3 @@
-
 def test_file(file_name):
     try:
         with open(file_name, 'r') as file:
@@ -6,6 +5,7 @@ def test_file(file_name):
     except FileNotFoundError:
         print ("File not found. Please check the path and try again.")
         return False
+    #this is not completely accurate in short messages, but works well in long ones.
 def count_words(file_name):
     if not test_file(file_name):
         return None
@@ -15,7 +15,7 @@ def count_words(file_name):
     except FileNotFoundError:
         return None
     words = data.split(" ")
-    return len(words)
+    return len(words) + 1
 
 def info(file_name):
     count = count_words(file_name)
@@ -43,20 +43,20 @@ def addtofile(file_name):
     import csv
     if not test_file(file_name):
         return
-    with open(file_name, 'a', newline='') as file:
+    #YES! code for removing timestamp.
+    with open(file_name, 'r') as base:
+        reader = csv.reader(base)
+        rows = list(reader)
+    rows = [row for row in rows if not any('Word count:' in cell or 'Timestamp:' in cell for cell in row)]
+    with open(file_name, 'w', newline='') as file:
         writer = csv.writer(file)
-        with open(file_name, 'r') as base:
-            reader = csv.reader(base)
-            rows = list(reader)
-            nums = -1
-            #code to make sure the word count and timestamp ONLY EXIST ONCE AT THE END OF THE FILE!!!!!
-            while True:
-                if 'Word count:' in rows[nums] and 'Timestamp:' in rows[nums]:
-                    rows.pop(nums)
-                else:
-                    nums -= 1
-        written = input("please type what you want to add to the file.\n")
-        writer.writerow([written])
+        for row in rows:
+            writer.writerow(row)
+        written = input("please type what you want to add to the file. add *** for line split.\n")
+        to_write = list(written.split("***"))
+        for line in to_write:
+            writer.writerow([line])
+        # code for adding new timestamp!
         stamp = Update(file_name)
         stamp_writer = csv.DictWriter(file, fieldnames=['wordcount', 'timestamp'])
         stamp_writer.writerow(stamp)
