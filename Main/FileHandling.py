@@ -5,29 +5,55 @@ def test_file(file_name):
     except FileNotFoundError:
         print ("File not found. Please check the path and try again.")
         return False
-    #this is not completely accurate in short messages, but works well in long ones.
 def count_words(file_name):
-    if not test_file(file_name):
-        return None
-    try:
-        with open(file_name, 'r') as file:
-            data = file.read()
-    except FileNotFoundError:
-        return None
-    words = data.split(" ")
-    return len(words) + 1
+    import csv
+    with open(file_name, 'r') as file:
+        if not test_file(file_name):
+            return None
+        reader = csv.reader(file)
+        text_parts = []
+        for row in reader:
+            # Skip rows that contain word count or timestamp stamps
+            if not any('Word count:' in cell or 'Timestamp:' in cell for cell in row):
+                text_parts.extend(row)
+        # Join all cells and split into words
+        text = ' '.join(text_parts)
+        words = text.split()
+        return len(words)
 
-def info(file_name):
+def update_stamp(file_name):
+    import csv
+    if not test_file(file_name):
+        return
+    with open(file_name, 'r') as f:
+        reader = csv.reader(f)
+        rows = list(reader)
+    rows = [row for row in rows if not any('Word count:' in cell or 'Timestamp:' in cell for cell in row)]
+    with open(file_name, 'w', newline='') as f:
+        writer = csv.writer(f)
+        for row in rows:
+            writer.writerow(row)
+    stamp = Update(file_name)
+    with open(file_name, 'a', newline='') as f:
+        stamp_writer = csv.DictWriter(f, fieldnames=['wordcount', 'timestamp'])
+        stamp_writer.writerow(stamp)
+
+def info(file_name, yes=False):
+    update_stamp(file_name)
     count = count_words(file_name)
-    if count is None:
-        print("File is empty")
+    if not yes:
+        if count == 0:
+            print("File is empty")
+        else:
+            print ("The file has", count, "words in it.")
+            print ("The Path to the file is:", file_name)
     else:
-        print ("The file has", count, "words in it.")
-    print ("The Path to the file is:", file_name)
+        return count
     
 def Update(file_name):
     from TimeHandling import get_timestamp
-    import csv
+    from FileHandling import info
+
 
     if not test_file(file_name):
         return None
@@ -36,7 +62,7 @@ def Update(file_name):
     timestamp = get_timestamp()
     
     with open(file_name, 'a', newline='') as base:
-        stamp = {'wordcount': "Word count:  " + str(wordcount), 'timestamp': "Timestamp:  " + str(timestamp)}
+        stamp = {'wordcount': "Word count:  " + str(info(file_name, yes=True)), 'timestamp': "Timestamp:  " + str(timestamp)}
     return stamp
 def addtofile(file_name):
 
