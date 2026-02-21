@@ -33,7 +33,10 @@ def update_stamp(file_name):
         writer = csv.writer(f)
         for row in rows:
             writer.writerow(row)
-    stamp = Update(file_name)
+    wordcount = count_words(file_name)
+    from TimeHandling import get_timestamp
+    timestamp = get_timestamp()
+    stamp = {'wordcount': "Word count:  " + str(wordcount), 'timestamp': "Timestamp:  " + str(timestamp)}
     with open(file_name, 'a', newline='') as f:
         stamp_writer = csv.DictWriter(f, fieldnames=['wordcount', 'timestamp'])
         stamp_writer.writerow(stamp)
@@ -50,20 +53,7 @@ def info(file_name, yes=False):
     else:
         return count
     
-def Update(file_name):
-    from TimeHandling import get_timestamp
-    from FileHandling import info
 
-
-    if not test_file(file_name):
-        return None
-    
-    wordcount = count_words(file_name)
-    timestamp = get_timestamp()
-    
-    with open(file_name, 'a', newline='') as base:
-        stamp = {'wordcount': "Word count:  " + str(info(file_name, yes=True)), 'timestamp': "Timestamp:  " + str(timestamp)}
-    return stamp
 def addtofile(file_name):
 
     import csv
@@ -82,8 +72,12 @@ def addtofile(file_name):
         to_write = list(written.split("***"))
         for line in to_write:
             writer.writerow([line])
-        # code for adding new timestamp!
-        stamp = Update(file_name)
+    # code for adding new timestamp!
+    wordcount = count_words(file_name)
+    from TimeHandling import get_timestamp
+    timestamp = get_timestamp()
+    stamp = {'wordcount': "Word count:  " + str(wordcount), 'timestamp': "Timestamp:  " + str(timestamp)}
+    with open(file_name, 'a', newline='') as file:
         stamp_writer = csv.DictWriter(file, fieldnames=['wordcount', 'timestamp'])
         stamp_writer.writerow(stamp)
 
@@ -118,8 +112,14 @@ def removefromfile(file_name):
         for i, row in enumerate(rows):
             if i >= num:
                 writer.writerow(row)
-        
-    Update(file_name)
+    
+    wordcount = count_words(file_name)
+    from TimeHandling import get_timestamp
+    timestamp = get_timestamp()
+    stamp = {'wordcount': "Word count:  " + str(wordcount), 'timestamp': "Timestamp:  " + str(timestamp)}
+    with open(file_name, 'a', newline='') as base:
+        stamp_writer = csv.DictWriter(base, fieldnames=['wordcount', 'timestamp'])
+        stamp_writer.writerow(stamp)
 def viewfile(file_name):
     with open(file_name, 'r') as file:
         if not test_file(file_name):

@@ -1,5 +1,5 @@
 #ZC 2nd Word Counter project
-from FileHandling import Update, addtofile, removefromfile, viewfile, info, test_file
+from FileHandling import addtofile, removefromfile, viewfile, info, test_file
 while True:
     file_name = input("Enter the exact path to your file: ")
     if not test_file(file_name):
