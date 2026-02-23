@@ -10,8 +10,7 @@ A simple command-line file editor built in Python. This tool allows you to read,
 - **File Info**: View basic file details, including size and Path
 
 ## Requirements
-- Python 3.x (tested on Python 3.8+).
-- No external dependencies required. uses modules  `os` and `datetime`
+- Python 3+.
 
 ## Installation
 No installation needed! Simply clone or download the repository and run the script in your terminal or VS Code!
